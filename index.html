@@ -5,148 +5,178 @@
 <title>CodeForge</title>
 
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0b0f1a;
-    color: white;
-  }
+body {
+  margin: 0;
+  font-family: Arial;
+  transition: 0.3s;
+}
 
-  header {
-    background: #111827;
-    padding: 14px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #1f2937;
-  }
+/* THEMES */
+.dark {
+  background: #0b0f1a;
+  color: white;
+}
+.light {
+  background: #f4f4f4;
+  color: black;
+}
 
-  .logo {
-    font-size: 20px;
-    font-weight: bold;
-    color: #38bdf8;
-  }
+header {
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  background: #111827;
+  color: white;
+}
 
-  .btn {
-    background: #38bdf8;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-  }
+.logo { font-weight: bold; color: #38bdf8; }
 
-  .layout {
-    display: flex;
-    height: calc(100vh - 60px);
-  }
+.btn {
+  background: #38bdf8;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
 
-  /* LEFT PANEL */
-  .sidebar {
-    width: 220px;
-    background: #0f172a;
-    padding: 15px;
-    border-right: 1px solid #1f2937;
-  }
+.container {
+  display: flex;
+  height: 90vh;
+}
 
-  .project {
-    background: #111827;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    cursor: pointer;
-  }
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  background: #1f2937;
+  padding: 10px;
+}
 
-  .project:hover {
-    background: #1f2937;
-  }
+.project {
+  background: #111827;
+  padding: 8px;
+  margin: 5px 0;
+  cursor: pointer;
+  border-radius: 5px;
+}
 
-  /* EDITOR */
-  textarea {
-    flex: 1;
-    background: #0f172a;
-    color: white;
-    border: none;
-    padding: 15px;
-    font-size: 14px;
-    outline: none;
-    resize: none;
-  }
+/* EDITOR */
+textarea {
+  width: 50%;
+  border: none;
+  padding: 10px;
+  resize: none;
+  background: #0f172a;
+  color: white;
+}
 
-  iframe {
-    flex: 1;
-    border: none;
-    background: white;
-  }
+iframe {
+  width: 50%;
+  border: none;
+  background: white;
+}
 
-  .editor {
-    display: flex;
-    flex: 1;
-  }
-
-  .topbar {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .tag {
-    font-size: 12px;
-    opacity: 0.7;
-  }
+.editor {
+  display: flex;
+  flex: 1;
+}
 </style>
 </head>
 
-<body>
+<body class="dark">
 
 <header>
   <div class="logo">⚡ CodeForge</div>
-  <div class="topbar">
-    <span class="tag">beta</span>
+
+  <div>
     <button class="btn" onclick="runCode()">Run</button>
+    <button class="btn" onclick="toggleTheme()">Theme</button>
+    <button class="btn" onclick="openTutorial()">Tutorial</button>
+    <button class="btn" onclick="openCreator()">Creator Page</button>
   </div>
 </header>
 
-<div class="layout">
+<div class="container">
 
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <h3>Projects</h3>
-
-    <div class="project">My First App</div>
-    <div class="project">Landing Page</div>
-    <div class="project">Game UI</div>
-
-    <button class="btn" style="width:100%; margin-top:10px;">
-      + New Project
-    </button>
+    <button class="btn" onclick="newProject()">+ New Project</button>
+    <div id="projectList"></div>
   </div>
 
-  <!-- EDITOR + PREVIEW -->
   <div class="editor">
-    <textarea id="code">
-<!DOCTYPE html>
-<html>
-<body style="font-family:Arial;text-align:center;padding:40px;">
-<h1 style="color:#38bdf8;">Welcome to CodeForge 🔥</h1>
-<p>Build something awesome.</p>
-</body>
-</html>
-    </textarea>
-
+    <textarea id="code"></textarea>
     <iframe id="output"></iframe>
   </div>
 
 </div>
 
 <script>
+
+let projects = JSON.parse(localStorage.getItem("projects") || "[]");
+let currentProject = null;
+
+function saveProjects() {
+  localStorage.setItem("projects", JSON.stringify(projects));
+}
+
+function renderProjects() {
+  const list = document.getElementById("projectList");
+  list.innerHTML = "";
+
+  projects.forEach((p, i) => {
+    const div = document.createElement("div");
+    div.className = "project";
+    div.innerText = p.name;
+    div.onclick = () => loadProject(i);
+    list.appendChild(div);
+  });
+}
+
+function newProject() {
+  let name = prompt("Project name:");
+  if (!name) return;
+
+  let project = {
+    name: name,
+    code: "<h1>Hello CodeForge</h1>"
+  };
+
+  projects.push(project);
+  saveProjects();
+  renderProjects();
+}
+
+function loadProject(i) {
+  currentProject = i;
+  document.getElementById("code").value = projects[i].code;
+}
+
 function runCode() {
-  const code = document.getElementById("code").value;
+  let code = document.getElementById("code").value;
+
+  if (currentProject !== null) {
+    projects[currentProject].code = code;
+    saveProjects();
+  }
+
   document.getElementById("output").srcdoc = code;
 }
 
-// auto-run once
-runCode();
+function toggleTheme() {
+  document.body.classList.toggle("light");
+  document.body.classList.toggle("dark");
+}
+
+function openTutorial() {
+  window.location.href = "tutorial.html";
+}
+
+function openCreator() {
+  window.location.href = "creator.html";
+}
+
+renderProjects();
+
 </script>
 
 </body>
