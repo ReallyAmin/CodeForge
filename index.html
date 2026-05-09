@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CodeForge</title>
+<title>CodeForge Pro</title>
 
 <style>
 body {
@@ -11,84 +11,84 @@ body {
   transition: 0.3s;
 }
 
-/* THEMES */
-.dark {
-  background: #0b0f1a;
-  color: white;
-}
-.light {
-  background: #f4f4f4;
-  color: black;
-}
+.dark { background:#0b0f1a; color:white; }
+.light { background:#f4f4f4; color:black; }
 
 header {
-  padding: 12px;
-  display: flex;
-  justify-content: space-between;
-  background: #111827;
-  color: white;
-  align-items: center;
+  display:flex;
+  justify-content:space-between;
+  padding:12px;
+  background:#111827;
+  color:white;
 }
 
-.logo {
-  font-weight: bold;
-  color: #38bdf8;
-}
+.logo { color:#38bdf8; font-weight:bold; }
 
 .btn {
-  background: #38bdf8;
-  border: none;
-  padding: 7px 10px;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-left: 5px;
+  background:#38bdf8;
+  border:none;
+  padding:6px 10px;
+  margin-left:5px;
+  cursor:pointer;
+  border-radius:5px;
 }
 
+/* layout */
 .container {
-  display: flex;
-  height: 90vh;
+  display:flex;
+  height:90vh;
 }
 
-/* SIDEBAR */
+/* sidebar */
 .sidebar {
-  width: 220px;
-  background: #1f2937;
-  padding: 10px;
-  overflow-y: auto;
+  width:260px;
+  background:#1f2937;
+  padding:10px;
+  overflow-y:auto;
+}
+
+.folder {
+  margin-top:10px;
+  padding:8px;
+  background:#111827;
+  border-radius:6px;
+}
+
+.folder-title {
+  font-weight:bold;
+  margin-bottom:5px;
 }
 
 .project {
-  background: #111827;
-  padding: 8px;
-  margin: 5px 0;
-  cursor: pointer;
-  border-radius: 5px;
+  padding:6px;
+  margin:5px 0;
+  border-radius:5px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.project:hover {
-  background: #374151;
-}
-
-/* EDITOR */
+/* editor */
 textarea {
-  width: 50%;
-  border: none;
-  padding: 10px;
-  resize: none;
-  background: #0f172a;
-  color: white;
-  outline: none;
+  width:50%;
+  background:#0f172a;
+  color:white;
+  border:none;
+  padding:10px;
+  outline:none;
+  resize:none;
 }
 
 iframe {
-  width: 50%;
-  border: none;
-  background: white;
+  width:50%;
+  border:none;
+  background:white;
 }
 
 .editor {
-  display: flex;
-  flex: 1;
+  display:flex;
+  flex:1;
 }
 </style>
 </head>
@@ -96,26 +96,24 @@ iframe {
 <body class="dark">
 
 <header>
-  <div class="logo">⚡ CodeForge</div>
-
+  <div class="logo">⚡ CodeForge Pro</div>
   <div>
-    <button class="btn" onclick="runCode()">Run</button>
-    <button class="btn" onclick="toggleTheme()">Theme</button>
-    <button class="btn" onclick="openTutorial()">Tutorial</button>
-    <button class="btn" onclick="openCreator()">Creator</button>
+    <button class="btn" onclick="run()">Run</button>
+    <button class="btn" onclick="toggle()">Theme</button>
+    <button class="btn" onclick="newFolder()">+ Folder</button>
+    <button class="btn" onclick="newProject()">+ Project</button>
   </div>
 </header>
 
 <div class="container">
 
   <div class="sidebar">
-    <h3>Projects</h3>
-    <button class="btn" onclick="newProject()">+ New</button>
-    <div id="projectList"></div>
+    <h3>Folders</h3>
+    <div id="folders"></div>
   </div>
 
   <div class="editor">
-    <textarea id="code" placeholder="Start coding..."></textarea>
+    <textarea id="code"></textarea>
     <iframe id="output"></iframe>
   </div>
 
@@ -123,86 +121,134 @@ iframe {
 
 <script>
 
-let projects = JSON.parse(localStorage.getItem("projects") || "[]");
-let currentProject = -1;
+let data = JSON.parse(localStorage.getItem("codeforge") || '{"folders":[]}');
+let current = { folder:-1, project:-1 };
 
 /* SAVE */
 function save() {
-  localStorage.setItem("projects", JSON.stringify(projects));
+  localStorage.setItem("codeforge", JSON.stringify(data));
 }
 
-/* RENDER PROJECT LIST */
+/* RENDER */
 function render() {
-  const list = document.getElementById("projectList");
-  list.innerHTML = "";
+  let container = document.getElementById("folders");
+  container.innerHTML = "";
 
-  projects.forEach((p, i) => {
+  data.folders.forEach((f, fi) => {
+
     let div = document.createElement("div");
-    div.className = "project";
-    div.innerText = p.name;
-    div.onclick = () => load(i);
-    list.appendChild(div);
+    div.className = "folder";
+
+    div.innerHTML = `
+      <div class="folder-title">
+        📁 ${f.name}
+        <button class="btn" onclick="deleteFolder(${fi})">X</button>
+      </div>
+    `;
+
+    f.projects.forEach((p, pi) => {
+      let proj = document.createElement("div");
+
+      proj.className = "project";
+      proj.style.background = p.color || "#111827";
+
+      proj.innerHTML = `
+        <span onclick="load(${fi},${pi})">${p.name}</span>
+        <span>
+          <button onclick="rename(${fi},${pi})">✏</button>
+          <button onclick="color(${fi},${pi})">🎨</button>
+          <button onclick="delProject(${fi},${pi})">🗑</button>
+        </span>
+      `;
+
+      div.appendChild(proj);
+    });
+
+    container.appendChild(div);
   });
 }
 
-/* NEW PROJECT */
+/* FOLDER */
+function newFolder() {
+  let name = prompt("Folder name:");
+  if (!name) return;
+
+  data.folders.push({ name:name, projects:[] });
+  save(); render();
+}
+
+function deleteFolder(i) {
+  if (!confirm("Delete folder?")) return;
+  data.folders.splice(i,1);
+  save(); render();
+}
+
+/* PROJECT */
 function newProject() {
+  if (data.folders.length === 0) return alert("Create folder first");
+
   let name = prompt("Project name:");
   if (!name) return;
 
-  projects.push({
-    name: name,
-    code: "<h1>Hello CodeForge</h1>"
+  data.folders[0].projects.push({
+    name:name,
+    code:"<h1>Hello CodeForge</h1>",
+    color:"#111827"
   });
 
-  save();
-  render();
+  save(); render();
 }
 
-/* LOAD PROJECT */
-function load(i) {
-  currentProject = i;
-  document.getElementById("code").value = projects[i].code;
-  runCode();
+function delProject(fi,pi) {
+  data.folders[fi].projects.splice(pi,1);
+  save(); render();
+}
+
+function rename(fi,pi) {
+  let name = prompt("New name:");
+  if (!name) return;
+  data.folders[fi].projects[pi].name = name;
+  save(); render();
+}
+
+function color(fi,pi) {
+  let c = prompt("Color (hex):","#111827");
+  data.folders[fi].projects[pi].color = c;
+  save(); render();
+}
+
+/* LOAD */
+function load(fi,pi) {
+  current = { folder:fi, project:pi };
+  document.getElementById("code").value =
+    data.folders[fi].projects[pi].code;
+  run();
 }
 
 /* AUTO SAVE */
 document.getElementById("code").addEventListener("input", () => {
-  if (currentProject >= 0) {
-    projects[currentProject].code = document.getElementById("code").value;
+  if (current.folder >= 0) {
+    data.folders[current.folder].projects[current.project].code =
+      document.getElementById("code").value;
+
     save();
   }
 });
 
-/* RUN CODE */
-function runCode() {
-  let code = document.getElementById("code").value;
-  document.getElementById("output").srcdoc = code;
+/* RUN */
+function run() {
+  document.getElementById("output").srcdoc =
+    document.getElementById("code").value;
 }
 
 /* THEME */
-function toggleTheme() {
+function toggle() {
   document.body.classList.toggle("light");
   document.body.classList.toggle("dark");
 }
 
-/* PAGES */
-function openTutorial() {
-  window.location.href = "tutorial.html";
-}
-
-function openCreator() {
-  window.location.href = "creator.html";
-}
-
 /* INIT */
 render();
-
-if (projects.length > 0) {
-  load(0);
-}
-
-runCode();
 
 </script>
 
