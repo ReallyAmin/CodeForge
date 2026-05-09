@@ -2,116 +2,95 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CodeForge</title>
-
+<title>CodeForge Ultimate</title>
 <style>
 body {
   margin: 0;
   font-family: Arial;
   transition: 0.3s;
 }
-
-/* THEMES */
-.dark { background:#0b0f1a; color:white; }
-.light { background:#f4f4f4; color:black; }
+.dark { background: #0b0f1a; color: white; }
+.light { background: #f4f4f4; color: black; }
 
 header {
-  display:flex;
-  justify-content:space-between;
-  padding:12px;
-  background:#111827;
-  color:white;
-  align-items:center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #111827;
+  color: white;
 }
-
-.logo {
-  font-weight:bold;
-  color:#38bdf8;
-}
-
+.logo { font-weight: bold; color: #38bdf8; font-size: 18px; }
 .btn {
-  background:#38bdf8;
-  border:none;
-  padding:6px 10px;
-  margin-left:5px;
-  cursor:pointer;
-  border-radius:5px;
+  background: #38bdf8;
+  border: none;
+  padding: 6px 10px;
+  margin-left: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 13px;
 }
+.container { display: flex; height: 90vh; overflow: hidden; }
 
-/* LAYOUT */
-.container {
-  display:flex;
-  height:90vh;
-}
-
-/* SIDEBAR */
+/* Sidebar */
 .sidebar {
-  width:260px;
-  background:#1f2937;
-  padding:10px;
-  overflow-y:auto;
+  width: 260px;
+  background: #1f2937;
+  padding: 10px;
+  overflow-y: auto;
 }
-
 .folder {
-  background:#111827;
-  padding:8px;
-  margin-top:10px;
-  border-radius:6px;
+  background: #111827;
+  padding: 8px;
+  margin-top: 10px;
+  border-radius: 6px;
 }
-
 .folder-title {
-  display:flex;
-  justify-content:space-between;
-  font-weight:bold;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
 }
-
 .project {
-  margin:5px 0;
-  padding:6px;
-  border-radius:5px;
-  display:flex;
-  justify-content:space-between;
-  cursor:pointer;
+  margin: 5px 0;
+  padding: 6px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  align-items: center;
 }
 
-/* EDITOR */
+/* Editor */
 textarea {
-  width:50%;
-  background:#0f172a;
-  color:white;
-  border:none;
-  padding:10px;
-  outline:none;
-  resize:none;
+  width: 50%;
+  background: #0f172a;
+  color: white;
+  border: none;
+  padding: 10px;
+  outline: none;
+  resize: none;
+  font-family: monospace;
+  font-size: 14px;
 }
-
 iframe {
-  width:50%;
-  border:none;
-  background:white;
+  width: 50%;
+  border: none;
+  background: white;
 }
+.editor { display: flex; flex: 1; }
 
-.editor {
-  display:flex;
-  flex:1;
-}
+/* Pages */
+.page { display: none; padding: 20px; overflow-y: auto; height: 90vh; }
+.page.active { display: block; }
 
-/* PAGES */
-.page {
-  display:none;
-  padding:20px;
-}
-.page.active {
-  display:block;
-}
+a { color: #38bdf8; text-decoration: none; }
+a:hover { text-decoration: underline; }
 </style>
 </head>
-
 <body class="dark">
 
 <header>
-  <div class="logo">⚡ CodeForge</div>
-
+  <div class="logo">⚡ CodeForge Ultimate</div>
   <div>
     <button class="btn" onclick="run()">Run</button>
     <button class="btn" onclick="toggleTheme()">Theme</button>
@@ -123,205 +102,120 @@ iframe {
   </div>
 </header>
 
-<!-- MAIN EDITOR PAGE -->
+<!-- MAIN EDITOR -->
 <div id="main" class="page active">
-
   <div class="container">
-
     <div class="sidebar">
       <h3>Projects</h3>
       <div id="folders"></div>
     </div>
-
     <div class="editor">
-      <textarea id="code"></textarea>
+      <textarea id="code" placeholder="Start coding..."></textarea>
       <iframe id="output"></iframe>
     </div>
-
   </div>
 </div>
 
 <!-- TUTORIAL PAGE -->
 <div id="tutorial" class="page">
-  <h1>CodeForge Tutorial</h1>
+<h1>CodeForge Tutorial</h1>
+<p>Learn HTML basics and start building projects.</p>
 
-  <p>Learn HTML basics:</p>
+<h2>Lesson 1: HTML Structure</h2>
+<pre>&lt;h1&gt;Hello&lt;/h1&gt;
+&lt;p&gt;My first website&lt;/p&gt;</pre>
 
-  <pre>
-&lt;h1&gt;Hello&lt;/h1&gt;
-&lt;p&gt;Text&lt;/p&gt;
-  </pre>
+<h2>Lesson 2: Links</h2>
+<pre>&lt;a href="https://example.com"&gt;Click here&lt;/a&gt;</pre>
 
-  <p>Links:</p>
+<h2>Lesson 3: Images</h2>
+<pre>&lt;img src="image.jpg" alt="My image"&gt;</pre>
 
-  <pre>
-&lt;a href="https://example.com"&gt;Click&lt;/a&gt;
-  </pre>
+<h2>Lesson 4: Lists</h2>
+<pre>&lt;ul&gt;
+  &lt;li&gt;Item 1&lt;/li&gt;
+  &lt;li&gt;Item 2&lt;/li&gt;
+&lt;/ul&gt;</pre>
+
+<h2>Lesson 5: Practice</h2>
+<p>Create a small page with a title, paragraph, link, and list. Use CodeForge to test!</p>
 </div>
 
 <!-- CREATOR PAGE -->
 <div id="creator" class="page">
-
 <h1>Here’s your updated Creator Page</h1>
-
 <h2>ReallyAmin | CodeForge Creator</h2>
-
-<p>
-I’m ReallyAmin, a creator focused on building and sharing meaningful projects in code.
-</p>
-
-<p>
-<a href="https://codetorch.net/en/users/reallyamin?utm_source=chatgpt.com">
-CodeTorch Profile
-</a>
-</p>
-
-<p>
-<a href="https://discord.com/invite/bGjgsEW3YE?utm_source=chatgpt.com">
-Discord Community
-</a>
-</p>
-
+<p>I’m ReallyAmin, focused on building and sharing meaningful projects in code.</p>
+<p>Check my profile: <a href="https://codetorch.net/en/users/reallyamin?utm_source=chatgpt.com" target="_blank">CodeTorch Profile</a></p>
+<p>Join Discord: <a href="https://discord.com/invite/bGjgsEW3YE?utm_source=chatgpt.com" target="_blank">Community</a></p>
 </div>
 
 <script>
-
 /* DATA */
 let data = JSON.parse(localStorage.getItem("cf") || '{"folders":[]}');
 let current = null;
 
 /* SAVE */
-function save() {
-  localStorage.setItem("cf", JSON.stringify(data));
-}
+function save(){ localStorage.setItem("cf", JSON.stringify(data)); }
 
 /* RENDER */
-function render() {
-  let root = document.getElementById("folders");
+function render(){
+  const root = document.getElementById("folders");
   root.innerHTML = "";
-
-  data.folders.forEach((f, fi) => {
-
+  data.folders.forEach((f,fi)=>{
     let folder = document.createElement("div");
-    folder.className = "folder";
-
-    folder.innerHTML = `
-      <div class="folder-title">
-        📁 ${f.name}
-        <button class="btn" onclick="delFolder(${fi})">X</button>
-      </div>
-    `;
-
-    f.projects.forEach((p, pi) => {
-
+    folder.className="folder";
+    folder.innerHTML=`<div class="folder-title">📁 ${f.name} <button class="btn" onclick="delFolder(${fi})">X</button></div>`;
+    f.projects.forEach((p,pi)=>{
       let div = document.createElement("div");
-      div.className = "project";
-      div.style.background = p.color || "#111827";
-
-      div.innerHTML = `
-        <span onclick="load(${fi},${pi})">${p.name}</span>
-        <span>
-          <button onclick="rename(${fi},${pi})">✏</button>
-          <button onclick="color(${fi},${pi})">🎨</button>
-          <button onclick="del(${fi},${pi})">🗑</button>
-        </span>
-      `;
-
+      div.className="project";
+      div.style.background=p.color||"#111827";
+      div.innerHTML=`<span onclick="load(${fi},${pi})">${p.name}</span>
+      <span>
+        <button onclick="rename(${fi},${pi})">✏</button>
+        <button onclick="color(${fi},${pi})">🎨</button>
+        <button onclick="del(${fi},${pi})">🗑</button>
+      </span>`;
       folder.appendChild(div);
     });
-
     root.appendChild(folder);
   });
 }
 
-/* FOLDER */
-function newFolder() {
-  let name = prompt("Folder name:");
-  if (!name) return;
+/* FOLDER FUNCTIONS */
+function newFolder(){let n=prompt("Folder name:"); if(!n) return; data.folders.push({name:n,projects:[]}); save(); render();}
+function delFolder(i){if(!confirm("Delete folder?")) return; data.folders.splice(i,1); save(); render();}
 
-  data.folders.push({ name, projects: [] });
-  save(); render();
-}
-
-function delFolder(i) {
-  if (!confirm("Delete folder?")) return;
-  data.folders.splice(i,1);
-  save(); render();
-}
-
-/* PROJECT */
-function newProject() {
-  if (!data.folders.length) return alert("Create folder first");
-
-  let name = prompt("Project name:");
-  if (!name) return;
-
-  data.folders[0].projects.push({
-    name,
-    code:"<h1>Hello CodeForge</h1>",
-    color:"#111827"
-  });
-
-  save(); render();
-}
-
-function del(fi,pi) {
-  data.folders[fi].projects.splice(pi,1);
-  save(); render();
-}
-
-function rename(fi,pi) {
-  let n = prompt("New name:");
-  if (!n) return;
-  data.folders[fi].projects[pi].name = n;
-  save(); render();
-}
-
-function color(fi,pi) {
-  let c = prompt("Color:", "#111827");
-  data.folders[fi].projects[pi].color = c;
-  save(); render();
-}
+/* PROJECT FUNCTIONS */
+function newProject(){if(!data.folders.length){alert("Create a folder first"); return;} let n=prompt("Project name:"); if(!n) return; data.folders[0].projects.push({name:n, code:"<h1>Hello CodeForge</h1>", color:"#111827"}); save(); render();}
+function del(fi,pi){data.folders[fi].projects.splice(pi,1); save(); render();}
+function rename(fi,pi){let n=prompt("New name:"); if(!n) return; data.folders[fi].projects[pi].name=n; save(); render();}
+function color(fi,pi){let c=prompt("Color:", "#111827"); data.folders[fi].projects[pi].color=c; save(); render();}
 
 /* LOAD */
-function load(fi,pi) {
-  current = {fi,pi};
-  document.getElementById("code").value =
-    data.folders[fi].projects[pi].code;
-  run();
-}
+function load(fi,pi){current={fi,pi}; document.getElementById("code").value=data.folders[fi].projects[pi].code; run();}
 
-/* AUTO SAVE */
-document.getElementById("code").addEventListener("input", () => {
-  if (!current) return;
-
-  data.folders[current.fi].projects[current.pi].code =
-    document.getElementById("code").value;
-
+/* AUTOSAVE */
+document.getElementById("code").addEventListener("input",()=>{
+  if(!current) return;
+  data.folders[current.fi].projects[current.pi].code=document.getElementById("code").value;
   save();
 });
 
 /* RUN */
-function run() {
-  document.getElementById("output").srcdoc =
-    document.getElementById("code").value;
-}
+function run(){document.getElementById("output").srcdoc=document.getElementById("code").value;}
 
 /* THEME */
-function toggleTheme() {
-  document.body.classList.toggle("light");
-  document.body.classList.toggle("dark");
-}
+function toggleTheme(){document.body.classList.toggle("light"); document.body.classList.toggle("dark");}
 
 /* PAGE SWITCH */
-function show(page) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+function show(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(page).classList.add("active");
 }
 
 /* INIT */
 render();
-
 </script>
 
 </body>
