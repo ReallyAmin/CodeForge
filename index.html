@@ -1,74 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>CodeForge</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-    }
+<meta charset="UTF-8">
+<title>CodeForge</title>
 
-    header {
-      background: #111827;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0f1a;
+    color: white;
+  }
 
-    .logo {
-      font-size: 20px;
-      font-weight: bold;
-      color: #38bdf8;
-    }
+  header {
+    background: #111827;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #1f2937;
+  }
 
-    .container {
-      display: flex;
-      height: 90vh;
-    }
+  .logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #38bdf8;
+  }
 
-    textarea {
-      width: 50%;
-      height: 100%;
-      background: #1e293b;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      font-size: 14px;
-      outline: none;
-    }
+  .btn {
+    background: #38bdf8;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  }
 
-    iframe {
-      width: 50%;
-      height: 100%;
-      border: none;
-      background: white;
-    }
+  .layout {
+    display: flex;
+    height: calc(100vh - 60px);
+  }
 
-    button {
-      background: #38bdf8;
-      border: none;
-      padding: 8px 12px;
-      cursor: pointer;
-      border-radius: 5px;
-      color: black;
-      font-weight: bold;
-    }
+  /* LEFT PANEL */
+  .sidebar {
+    width: 220px;
+    background: #0f172a;
+    padding: 15px;
+    border-right: 1px solid #1f2937;
+  }
 
-    .topbar {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
+  .project {
+    background: #111827;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
 
-    .auth {
-      font-size: 14px;
-      opacity: 0.8;
-    }
-  </style>
+  .project:hover {
+    background: #1f2937;
+  }
+
+  /* EDITOR */
+  textarea {
+    flex: 1;
+    background: #0f172a;
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 14px;
+    outline: none;
+    resize: none;
+  }
+
+  iframe {
+    flex: 1;
+    border: none;
+    background: white;
+  }
+
+  .editor {
+    display: flex;
+    flex: 1;
+  }
+
+  .topbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .tag {
+    font-size: 12px;
+    opacity: 0.7;
+  }
+</style>
 </head>
 
 <body>
@@ -76,31 +102,51 @@
 <header>
   <div class="logo">⚡ CodeForge</div>
   <div class="topbar">
-    <div class="auth">Guest User</div>
-    <button onclick="runCode()">Run Code</button>
+    <span class="tag">beta</span>
+    <button class="btn" onclick="runCode()">Run</button>
   </div>
 </header>
 
-<div class="container">
-  <textarea id="code">
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h3>Projects</h3>
+
+    <div class="project">My First App</div>
+    <div class="project">Landing Page</div>
+    <div class="project">Game UI</div>
+
+    <button class="btn" style="width:100%; margin-top:10px;">
+      + New Project
+    </button>
+  </div>
+
+  <!-- EDITOR + PREVIEW -->
+  <div class="editor">
+    <textarea id="code">
 <!DOCTYPE html>
 <html>
-<body>
-<h1>Hello CodeForge 🚀</h1>
-<p>Start coding here...</p>
+<body style="font-family:Arial;text-align:center;padding:40px;">
+<h1 style="color:#38bdf8;">Welcome to CodeForge 🔥</h1>
+<p>Build something awesome.</p>
 </body>
 </html>
-  </textarea>
+    </textarea>
 
-  <iframe id="output"></iframe>
+    <iframe id="output"></iframe>
+  </div>
+
 </div>
 
 <script>
 function runCode() {
-  let code = document.getElementById("code").value;
-  let output = document.getElementById("output");
-  output.srcdoc = code;
+  const code = document.getElementById("code").value;
+  document.getElementById("output").srcdoc = code;
 }
+
+// auto-run once
+runCode();
 </script>
 
 </body>
