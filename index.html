@@ -1,10 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My Website</title>
+  <meta charset="UTF-8">
+  <title>CodeForge</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+
+    header {
+      background: #111827;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+
+    .container {
+      display: flex;
+      height: 90vh;
+    }
+
+    textarea {
+      width: 50%;
+      height: 100%;
+      background: #1e293b;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    iframe {
+      width: 50%;
+      height: 100%;
+      border: none;
+      background: white;
+    }
+
+    button {
+      background: #38bdf8;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      color: black;
+      font-weight: bold;
+    }
+
+    .topbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .auth {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Hello world</h1>
-  <p>My site is live!</p>
+
+<header>
+  <div class="logo">⚡ CodeForge</div>
+  <div class="topbar">
+    <div class="auth">Guest User</div>
+    <button onclick="runCode()">Run Code</button>
+  </div>
+</header>
+
+<div class="container">
+  <textarea id="code">
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Hello CodeForge 🚀</h1>
+<p>Start coding here...</p>
+</body>
+</html>
+  </textarea>
+
+  <iframe id="output"></iframe>
+</div>
+
+<script>
+function runCode() {
+  let code = document.getElementById("code").value;
+  let output = document.getElementById("output");
+  output.srcdoc = code;
+}
+</script>
+
 </body>
 </html>
