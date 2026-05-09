@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CodeForge Pro</title>
+<title>CodeForge</title>
 
 <style>
 body {
@@ -20,9 +20,13 @@ header {
   padding:12px;
   background:#111827;
   color:white;
+  align-items:center;
 }
 
-.logo { color:#38bdf8; font-weight:bold; }
+.logo {
+  color:#38bdf8;
+  font-weight:bold;
+}
 
 .btn {
   background:#38bdf8;
@@ -33,13 +37,12 @@ header {
   border-radius:5px;
 }
 
-/* layout */
 .container {
   display:flex;
   height:90vh;
 }
 
-/* sidebar */
+/* SIDEBAR */
 .sidebar {
   width:260px;
   background:#1f2937;
@@ -48,28 +51,29 @@ header {
 }
 
 .folder {
-  margin-top:10px;
-  padding:8px;
   background:#111827;
+  padding:8px;
+  margin-top:10px;
   border-radius:6px;
 }
 
 .folder-title {
   font-weight:bold;
-  margin-bottom:5px;
-}
-
-.project {
-  padding:6px;
-  margin:5px 0;
-  border-radius:5px;
-  cursor:pointer;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 
-/* editor */
+.project {
+  margin:5px 0;
+  padding:6px;
+  border-radius:5px;
+  display:flex;
+  justify-content:space-between;
+  cursor:pointer;
+}
+
+/* EDITOR */
 textarea {
   width:50%;
   background:#0f172a;
@@ -96,24 +100,27 @@ iframe {
 <body class="dark">
 
 <header>
-  <div class="logo">⚡ CodeForge Pro</div>
+  <div class="logo">⚡ CodeForge</div>
+
   <div>
     <button class="btn" onclick="run()">Run</button>
-    <button class="btn" onclick="toggle()">Theme</button>
-    <button class="btn" onclick="newFolder()">+ Folder</button>
-    <button class="btn" onclick="newProject()">+ Project</button>
+    <button class="btn" onclick="toggleTheme()">Theme</button>
+    <button class="btn" onclick="newFolder()">Folder</button>
+    <button class="btn" onclick="newProject()">Project</button>
+    <button class="btn" onclick="goTutorial()">Tutorial</button>
+    <button class="btn" onclick="goCreator()">Creator</button>
   </div>
 </header>
 
 <div class="container">
 
   <div class="sidebar">
-    <h3>Folders</h3>
+    <h3>Projects</h3>
     <div id="folders"></div>
   </div>
 
   <div class="editor">
-    <textarea id="code"></textarea>
+    <textarea id="code" placeholder="Start coding..."></textarea>
     <iframe id="output"></iframe>
   </div>
 
@@ -121,25 +128,26 @@ iframe {
 
 <script>
 
-let data = JSON.parse(localStorage.getItem("codeforge") || '{"folders":[]}');
-let current = { folder:-1, project:-1 };
+/* DATA */
+let data = JSON.parse(localStorage.getItem("cf_data") || '{"folders":[]}');
+let current = null;
 
 /* SAVE */
 function save() {
-  localStorage.setItem("codeforge", JSON.stringify(data));
+  localStorage.setItem("cf_data", JSON.stringify(data));
 }
 
 /* RENDER */
 function render() {
-  let container = document.getElementById("folders");
-  container.innerHTML = "";
+  const root = document.getElementById("folders");
+  root.innerHTML = "";
 
   data.folders.forEach((f, fi) => {
 
-    let div = document.createElement("div");
-    div.className = "folder";
+    let folder = document.createElement("div");
+    folder.className = "folder";
 
-    div.innerHTML = `
+    folder.innerHTML = `
       <div class="folder-title">
         📁 ${f.name}
         <button class="btn" onclick="deleteFolder(${fi})">X</button>
@@ -147,8 +155,8 @@ function render() {
     `;
 
     f.projects.forEach((p, pi) => {
-      let proj = document.createElement("div");
 
+      let proj = document.createElement("div");
       proj.className = "project";
       proj.style.background = p.color || "#111827";
 
@@ -157,14 +165,14 @@ function render() {
         <span>
           <button onclick="rename(${fi},${pi})">✏</button>
           <button onclick="color(${fi},${pi})">🎨</button>
-          <button onclick="delProject(${fi},${pi})">🗑</button>
+          <button onclick="del(${fi},${pi})">🗑</button>
         </span>
       `;
 
-      div.appendChild(proj);
+      folder.appendChild(proj);
     });
 
-    container.appendChild(div);
+    root.appendChild(folder);
   });
 }
 
@@ -173,7 +181,7 @@ function newFolder() {
   let name = prompt("Folder name:");
   if (!name) return;
 
-  data.folders.push({ name:name, projects:[] });
+  data.folders.push({ name, projects: [] });
   save(); render();
 }
 
@@ -185,13 +193,16 @@ function deleteFolder(i) {
 
 /* PROJECT */
 function newProject() {
-  if (data.folders.length === 0) return alert("Create folder first");
+  if (!data.folders.length) {
+    alert("Create a folder first");
+    return;
+  }
 
   let name = prompt("Project name:");
   if (!name) return;
 
   data.folders[0].projects.push({
-    name:name,
+    name,
     code:"<h1>Hello CodeForge</h1>",
     color:"#111827"
   });
@@ -199,7 +210,7 @@ function newProject() {
   save(); render();
 }
 
-function delProject(fi,pi) {
+function del(fi,pi) {
   data.folders[fi].projects.splice(pi,1);
   save(); render();
 }
@@ -212,27 +223,27 @@ function rename(fi,pi) {
 }
 
 function color(fi,pi) {
-  let c = prompt("Color (hex):","#111827");
+  let c = prompt("Color hex:", "#111827");
   data.folders[fi].projects[pi].color = c;
   save(); render();
 }
 
 /* LOAD */
 function load(fi,pi) {
-  current = { folder:fi, project:pi };
+  current = {fi,pi};
   document.getElementById("code").value =
     data.folders[fi].projects[pi].code;
   run();
 }
 
-/* AUTO SAVE */
+/* AUTO SAVE (FIXED) */
 document.getElementById("code").addEventListener("input", () => {
-  if (current.folder >= 0) {
-    data.folders[current.folder].projects[current.project].code =
-      document.getElementById("code").value;
+  if (!current) return;
 
-    save();
-  }
+  data.folders[current.fi].projects[current.pi].code =
+    document.getElementById("code").value;
+
+  save();
 });
 
 /* RUN */
@@ -242,9 +253,18 @@ function run() {
 }
 
 /* THEME */
-function toggle() {
+function toggleTheme() {
   document.body.classList.toggle("light");
   document.body.classList.toggle("dark");
+}
+
+/* PAGES */
+function goTutorial() {
+  window.location.href = "tutorial.html";
+}
+
+function goCreator() {
+  window.location.href = "creator.html";
 }
 
 /* INIT */
