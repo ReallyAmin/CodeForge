@@ -27,16 +27,21 @@ header {
   justify-content: space-between;
   background: #111827;
   color: white;
+  align-items: center;
 }
 
-.logo { font-weight: bold; color: #38bdf8; }
+.logo {
+  font-weight: bold;
+  color: #38bdf8;
+}
 
 .btn {
   background: #38bdf8;
   border: none;
-  padding: 6px 10px;
+  padding: 7px 10px;
   cursor: pointer;
   border-radius: 5px;
+  margin-left: 5px;
 }
 
 .container {
@@ -49,6 +54,7 @@ header {
   width: 220px;
   background: #1f2937;
   padding: 10px;
+  overflow-y: auto;
 }
 
 .project {
@@ -59,6 +65,10 @@ header {
   border-radius: 5px;
 }
 
+.project:hover {
+  background: #374151;
+}
+
 /* EDITOR */
 textarea {
   width: 50%;
@@ -67,6 +77,7 @@ textarea {
   resize: none;
   background: #0f172a;
   color: white;
+  outline: none;
 }
 
 iframe {
@@ -91,7 +102,7 @@ iframe {
     <button class="btn" onclick="runCode()">Run</button>
     <button class="btn" onclick="toggleTheme()">Theme</button>
     <button class="btn" onclick="openTutorial()">Tutorial</button>
-    <button class="btn" onclick="openCreator()">Creator Page</button>
+    <button class="btn" onclick="openCreator()">Creator</button>
   </div>
 </header>
 
@@ -99,12 +110,12 @@ iframe {
 
   <div class="sidebar">
     <h3>Projects</h3>
-    <button class="btn" onclick="newProject()">+ New Project</button>
+    <button class="btn" onclick="newProject()">+ New</button>
     <div id="projectList"></div>
   </div>
 
   <div class="editor">
-    <textarea id="code"></textarea>
+    <textarea id="code" placeholder="Start coding..."></textarea>
     <iframe id="output"></iframe>
   </div>
 
@@ -113,60 +124,69 @@ iframe {
 <script>
 
 let projects = JSON.parse(localStorage.getItem("projects") || "[]");
-let currentProject = null;
+let currentProject = -1;
 
-function saveProjects() {
+/* SAVE */
+function save() {
   localStorage.setItem("projects", JSON.stringify(projects));
 }
 
-function renderProjects() {
+/* RENDER PROJECT LIST */
+function render() {
   const list = document.getElementById("projectList");
   list.innerHTML = "";
 
   projects.forEach((p, i) => {
-    const div = document.createElement("div");
+    let div = document.createElement("div");
     div.className = "project";
     div.innerText = p.name;
-    div.onclick = () => loadProject(i);
+    div.onclick = () => load(i);
     list.appendChild(div);
   });
 }
 
+/* NEW PROJECT */
 function newProject() {
   let name = prompt("Project name:");
   if (!name) return;
 
-  let project = {
+  projects.push({
     name: name,
     code: "<h1>Hello CodeForge</h1>"
-  };
+  });
 
-  projects.push(project);
-  saveProjects();
-  renderProjects();
+  save();
+  render();
 }
 
-function loadProject(i) {
+/* LOAD PROJECT */
+function load(i) {
   currentProject = i;
   document.getElementById("code").value = projects[i].code;
+  runCode();
 }
 
+/* AUTO SAVE */
+document.getElementById("code").addEventListener("input", () => {
+  if (currentProject >= 0) {
+    projects[currentProject].code = document.getElementById("code").value;
+    save();
+  }
+});
+
+/* RUN CODE */
 function runCode() {
   let code = document.getElementById("code").value;
-
-  if (currentProject !== null) {
-    projects[currentProject].code = code;
-    saveProjects();
-  }
-
   document.getElementById("output").srcdoc = code;
 }
 
+/* THEME */
 function toggleTheme() {
   document.body.classList.toggle("light");
   document.body.classList.toggle("dark");
 }
 
+/* PAGES */
 function openTutorial() {
   window.location.href = "tutorial.html";
 }
@@ -175,7 +195,14 @@ function openCreator() {
   window.location.href = "creator.html";
 }
 
-renderProjects();
+/* INIT */
+render();
+
+if (projects.length > 0) {
+  load(0);
+}
+
+runCode();
 
 </script>
 
