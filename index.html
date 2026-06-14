@@ -1,8 +1,10 @@
-<!DOCTYPE html>
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CodeForge Ultimate</title>
+<title>CodeForge</title>
 <style>
 body {
   margin: 0;
@@ -32,7 +34,6 @@ header {
 }
 .container { display: flex; height: 90vh; overflow: hidden; }
 
-/* Sidebar */
 .sidebar {
   width: 260px;
   background: #1f2937;
@@ -60,7 +61,6 @@ header {
   align-items: center;
 }
 
-/* Editor */
 textarea {
   width: 50%;
   background: #0f172a;
@@ -79,7 +79,6 @@ iframe {
 }
 .editor { display: flex; flex: 1; }
 
-/* Pages */
 .page { display: none; padding: 20px; overflow-y: auto; height: 90vh; }
 .page.active { display: block; }
 
@@ -90,19 +89,19 @@ a:hover { text-decoration: underline; }
 <body class="dark">
 
 <header>
-  <div class="logo">⚡ CodeForge Ultimate</div>
+  <div class="logo">⚡ CodeForge</div>
   <div>
     <button class="btn" onclick="run()">Run</button>
     <button class="btn" onclick="toggleTheme()">Theme</button>
     <button class="btn" onclick="show('main')">Editor</button>
     <button class="btn" onclick="show('tutorial')">Tutorial</button>
     <button class="btn" onclick="show('creator')">Creator</button>
+    <button class="btn" onclick="show('qa')">Q&A</button>
     <button class="btn" onclick="newFolder()">Folder</button>
     <button class="btn" onclick="newProject()">Project</button>
   </div>
 </header>
 
-<!-- MAIN EDITOR -->
 <div id="main" class="page active">
   <div class="container">
     <div class="sidebar">
@@ -116,10 +115,9 @@ a:hover { text-decoration: underline; }
   </div>
 </div>
 
-<!-- TUTORIAL PAGE -->
 <div id="tutorial" class="page">
 <h1>CodeForge Tutorial</h1>
-<p>Learn HTML basics and start building projects.</p>
+<p>Learn the basics of HTML and begin creating your own web projects.</p>
 
 <h2>Lesson 1: HTML Structure</h2>
 <pre>&lt;h1&gt;Hello&lt;/h1&gt;
@@ -138,27 +136,87 @@ a:hover { text-decoration: underline; }
 &lt;/ul&gt;</pre>
 
 <h2>Lesson 5: Practice</h2>
-<p>Create a small page with a title, paragraph, link, and list. Use CodeForge to test!</p>
+<p>Create a webpage with a title, paragraph, link, and list. Use CodeForge to test your work.</p>
 </div>
 
-<!-- CREATOR PAGE -->
 <div id="creator" class="page">
-<h1>Here’s your updated Creator Page</h1>
-<h2>ReallyAmin | CodeForge Creator</h2>
-<p>I’m ReallyAmin, focused on building and sharing meaningful projects in code.</p>
-<p>Check my profile: <a href="https://codetorch.net/en/users/reallyamin?utm_source=chatgpt.com" target="_blank">CodeTorch Profile</a></p>
-<p>Join Discord: <a href="https://discord.com/invite/bGjgsEW3YE?utm_source=chatgpt.com" target="_blank">Community</a></p>
+<h1>About the Creator</h1>
+<h2>ReallyAmin | Creator of CodeForge</h2>
+
+<p>Welcome to CodeForge. I'm ReallyAmin, the creator and developer of this platform.</p>
+
+<p>My goal is to provide a simple, organized, and beginner-friendly coding environment where anyone can learn, experiment, and build projects.</p>
+
+<h3>Connect With Me</h3>
+
+<p>
+CodeTorch Profile:
+<a href="https://codetorch.net/en/users/reallyamin" target="_blank">Visit My Profile</a>
+</p>
+
+<p>
+Official CodeForge Discord:
+<a href="https://discord.com/invite/DNu3Bkm5XY" target="_blank">Join the Community</a>
+</p>
+
+<h3>About CodeForge</h3>
+
+<p>
+CodeForge is a browser-based coding workspace designed for learning, experimenting, and creating projects. It includes project organization, live previews, tutorials, automatic saving, and customization tools.
+</p>
+
+<p>Thank you for using CodeForge and supporting its development.</p>
+</div>
+
+<div id="qa" class="page">
+<h1>CodeForge Questions & Answers</h1>
+
+<h2>What is CodeForge?</h2>
+<p>CodeForge is a browser-based coding platform that allows users to write, organize, and test code.</p>
+
+<h2>Who is CodeForge for?</h2>
+<p>CodeForge is designed for both beginners and experienced developers.</p>
+
+<h2>What is the Editor?</h2>
+<p>The Editor is where you write and modify your code.</p>
+
+<h2>What does the Run button do?</h2>
+<p>The Run button executes your code and displays the result in the live preview window.</p>
+
+<h2>What are Folders?</h2>
+<p>Folders help organize projects into groups.</p>
+
+<h2>What are Projects?</h2>
+<p>Projects are individual coding files stored inside folders.</p>
+
+<h2>What does Theme do?</h2>
+<p>The Theme button switches between light mode and dark mode.</p>
+
+<h2>Does CodeForge save my work?</h2>
+<p>Yes. CodeForge automatically saves projects using your browser's local storage.</p>
+
+<h2>Can I create multiple projects?</h2>
+<p>Yes. You can create as many projects and folders as you need.</p>
+
+<h2>Can I customize project colors?</h2>
+<p>Yes. Each project can have a custom color for better organization.</p>
+
+<h2>Where can I learn coding?</h2>
+<p>The Tutorial page contains beginner-friendly lessons and examples.</p>
+
+<h2>How do I get support?</h2>
+<p>Join the official CodeForge Discord community for support and updates.</p>
+
+<h2>Who created CodeForge?</h2>
+<p>CodeForge was created by ReallyAmin.</p>
 </div>
 
 <script>
-/* DATA */
 let data = JSON.parse(localStorage.getItem("cf") || '{"folders":[]}');
 let current = null;
 
-/* SAVE */
 function save(){ localStorage.setItem("cf", JSON.stringify(data)); }
 
-/* RENDER */
 function render(){
   const root = document.getElementById("folders");
   root.innerHTML = "";
@@ -182,41 +240,53 @@ function render(){
   });
 }
 
-/* FOLDER FUNCTIONS */
 function newFolder(){let n=prompt("Folder name:"); if(!n) return; data.folders.push({name:n,projects:[]}); save(); render();}
 function delFolder(i){if(!confirm("Delete folder?")) return; data.folders.splice(i,1); save(); render();}
 
-/* PROJECT FUNCTIONS */
-function newProject(){if(!data.folders.length){alert("Create a folder first"); return;} let n=prompt("Project name:"); if(!n) return; data.folders[0].projects.push({name:n, code:"<h1>Hello CodeForge</h1>", color:"#111827"}); save(); render();}
+function newProject(){
+ if(!data.folders.length){alert("Create a folder first"); return;}
+ let n=prompt("Project name:");
+ if(!n) return;
+ data.folders[0].projects.push({name:n, code:"<h1>Hello CodeForge</h1>", color:"#111827"});
+ save(); render();
+}
+
 function del(fi,pi){data.folders[fi].projects.splice(pi,1); save(); render();}
 function rename(fi,pi){let n=prompt("New name:"); if(!n) return; data.folders[fi].projects[pi].name=n; save(); render();}
 function color(fi,pi){let c=prompt("Color:", "#111827"); data.folders[fi].projects[pi].color=c; save(); render();}
 
-/* LOAD */
-function load(fi,pi){current={fi,pi}; document.getElementById("code").value=data.folders[fi].projects[pi].code; run();}
-
-/* AUTOSAVE */
-document.getElementById("code").addEventListener("input",()=>{
-  if(!current) return;
-  data.folders[current.fi].projects[current.pi].code=document.getElementById("code").value;
-  save();
-});
-
-/* RUN */
-function run(){document.getElementById("output").srcdoc=document.getElementById("code").value;}
-
-/* THEME */
-function toggleTheme(){document.body.classList.toggle("light"); document.body.classList.toggle("dark");}
-
-/* PAGE SWITCH */
-function show(page){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(page).classList.add("active");
+function load(fi,pi){
+ current={fi,pi};
+ document.getElementById("code").value=data.folders[fi].projects[pi].code;
+ run();
 }
 
-/* INIT */
+document.getElementById("code").addEventListener("input",()=>{
+ if(!current) return;
+ data.folders[current.fi].projects[current.pi].code=document.getElementById("code").value;
+ save();
+});
+
+function run(){
+ document.getElementById("output").srcdoc=document.getElementById("code").value;
+}
+
+function toggleTheme(){
+ document.body.classList.toggle("light");
+ document.body.classList.toggle("dark");
+}
+
+function show(page){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(page).classList.add("active");
+}
+
 render();
 </script>
 
 </body>
-</html>
+</html>'''
+
+path = "/mnt/data/CodeForge-index.html"
+Path(path).write_text(html, encoding="utf-8")
+print(path)
